@@ -1,7 +1,7 @@
 var builder = require('botbuilder');
 var restify = require('restify');
-//var connector = new builder.ConsoleConnector().listen();// for command line testing
-var connector = new builder.ChatConnector({
+var connector = new builder.ConsoleConnector().listen();// for command line testing
+/*var connector = new builder.ChatConnector({
 	appId: process.env.MICROSOFT_APP_ID,
 	appPassword: process.env.MICROSOFT_APP_PASSWORD
 });//for connecting to other platforms*/
@@ -11,7 +11,7 @@ var model = 'https://api.projectoxford.ai/luis/v1/application?id=89663372-7a2a-4
 var recognizer = new builder.LuisRecognizer(model);
 var dialog = new builder.IntentDialog({recognizers: [recognizer]});
 
-//server creation
+/*/server creation
 var server = restify.createServer();
 server.listen(process.env.port||process.env.PORT||3978, function(){
 	console.log('%s listening to %s',server.name,server.url);
@@ -42,7 +42,7 @@ dialog.matches('change',[function(session,args,next){
 		});
 	}
 }]);
-dialog.matches('delete', [function(session){
+dialog.matches('delete', [function(session,args,next){
 	session.send('got here');
 	session.userData = [];
 	session.replaceDialog('/');
