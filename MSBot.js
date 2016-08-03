@@ -2,8 +2,8 @@ var builder = require('botbuilder');
 var restify = require('restify');
 //var connector = new builder.ConsoleConnector().listen();// for command line testing
 var connector = new builder.ChatConnector({
-	appId: process.env.MICROSOFT_APP_ID,
-	appPassword: process.env.MICROSOFT_APP_PASSWORD
+	appId: '43e62488-4345-40fb-bfc5-b27c2d971688',
+	appPassword: 'sQ0obOE8SKJpAC378S23Wvp'
 });//for connecting to other platforms*/
 var bot = new builder.UniversalBot(connector);
 
