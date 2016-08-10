@@ -1,22 +1,27 @@
 var builder = require('botbuilder');
 var restify = require('restify');
-//var connector = new builder.ConsoleConnector().listen();// for command line testing
+var http = require('http');
+var commandconnector = new builder.ConsoleConnector().listen();// for command line testing
 var connector = new builder.ChatConnector({
 	appId: '43e62488-4345-40fb-bfc5-b27c2d971688',
 	appPassword: 'sQ0obOE8SKJpAC378S23Wvp'
 });//for connecting to other platforms*/
+console.log(connector);
 var bot = new builder.UniversalBot(connector);
 
 var model = 'https://api.projectoxford.ai/luis/v1/application?id=89663372-7a2a-4a40-b4d5-43ab37173df3&subscription-key=1ae1efdab0a54c389e5ec2fc0e74c738'
 var recognizer = new builder.LuisRecognizer(model);
-var dialog = new builder.IntentDialog({recognizers: [recognizer]});
+var cbotmodel = 'https://api.projectoxford.ai/luis/v1/application?id=292e773e-3c56-4545-a08d-6cb0708c5921&subscription-key=3e3f5b21d2064d7188ed8c5a55522c50'
+var cbotrecognizer = new builder.LuisRecognizer(cbotmodel);
+var dialog = new builder.IntentDialog({recognizers: [recognizer,cbotrecognizer]});
 
 //server creation
 var server = restify.createServer();
+
 server.listen(process.env.port||process.env.PORT||3978, function(){
 	console.log('%s listening to %s',server.name,server.url);
 });
-server.post('/api/messages',connector.listen());//*/
+server.post('/api/messages/',connector.listen());//*/
 
 
 bot.dialog('/',dialog);
@@ -71,6 +76,7 @@ dialog.onDefault(function(session){
 //Inital greeting
 bot.dialog('/firstRun',function (session){
 		session.send('Welcome to the bot.');
+		session.send({attachments: [{contenttype: 'image/jpg', contenturl: 'http://www.muellerinc.com/gallery/building/image?view=image&format=raw&type=orig&id=708'}]});
 		session.beginDialog('/');
 });
 //prompting user for their name
