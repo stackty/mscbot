@@ -6,7 +6,7 @@ var connector = new builder.ChatConnector({
 	appId: '43e62488-4345-40fb-bfc5-b27c2d971688',
 	appPassword: 'sQ0obOE8SKJpAC378S23Wvp'
 });//for connecting to other platforms*/
-console.log(connector);
+
 var bot = new builder.UniversalBot(connector);
 
 var model = 'https://api.projectoxford.ai/luis/v1/application?id=89663372-7a2a-4a40-b4d5-43ab37173df3&subscription-key=1ae1efdab0a54c389e5ec2fc0e74c738'
