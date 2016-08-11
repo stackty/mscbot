@@ -9,7 +9,7 @@ var connector = new builder.ChatConnector({
 
 var bot = new builder.UniversalBot(connector);
 
-var model = 'https://api.projectoxford.ai/luis/v1/application?id=89663372-7a2a-4a40-b4d5-43ab37173df3&subscription-key=1ae1efdab0a54c389e5ec2fc0e74c738'
+var model = 'https://api.projectoxford.ai/luis/v1/application?id=40c9c421-1bb1-4dcc-ba0d-efc0daf99d61&subscription-key=3e3f5b21d2064d7188ed8c5a55522c50'
 var recognizer = new builder.LuisRecognizer(model);
 var cbotmodel = 'https://api.projectoxford.ai/luis/v1/application?id=292e773e-3c56-4545-a08d-6cb0708c5921&subscription-key=3e3f5b21d2064d7188ed8c5a55522c50'
 var cbotrecognizer = new builder.LuisRecognizer(cbotmodel);
@@ -32,8 +32,7 @@ dialog.onBegin(function(session, args,next){
 	}else{
 		next();
 	}
-});
-dialog.matches('change',[function(session,args,next){
+}).matches('change',[function(session,args,next){
 	if(args.entities.length<1){
 		session.send("You did not say what you want to change");
 	}else {
@@ -47,16 +46,24 @@ dialog.matches('change',[function(session,args,next){
 			}
 		});
 	}
-}]);
-dialog.matches('delete', [function(session,args,next){
-	session.send('got here');
-	session.userData = [];
-	session.replaceDialog('/');
-}]);
-dialog.matches('end',[function(session){
+}]).matches('delete', [function(session,args,next){
+	if(args.entities.length<1){
+		session.send("You did not say what you want to delete.");
+	}else {
+		args.entities.forEach(function(item){
+			if (item.entity == 'name'){
+				session.replaceDialog('/delName');
+			}else if (item.entity == 'email'){
+				session.replaceDialog('/delEmail');
+			}else if (item.entity == 'age'){
+				session.replaceDialog('/delAge');
+			}else{
+				session.replaceDialog('/deleteInfo');
+			}
+		});
+}}]).matches('end',[function(session){
 	session.endConversation('Thank you for your time!');
-}]);
-dialog.onDefault(function(session){
+}]).onDefault(function(session){
 	if (!session.userData.name){
 		session.replaceDialog('/getName');
 	} else if(!session.userData.age){
@@ -76,8 +83,7 @@ dialog.onDefault(function(session){
 //Inital greeting
 bot.dialog('/firstRun',function (session){
 		session.send('Welcome to the bot.');
-		session.send({attachments: [{contenttype: 'image/jpg', contenturl: 'http://www.muellerinc.com/gallery/building/image?view=image&format=raw&type=orig&id=708'}]});
-		session.beginDialog('/');
+		session.replaceDialog('/');
 });
 //prompting user for their name
 bot.dialog('/getName',[function(session){
@@ -101,3 +107,36 @@ bot.dialog('/getEmail', [function(session){
 	session.userData.email = results.response;
 	session.replaceDialog('/');
 }]);
+bot.dialog('/delName',[function(session){
+	builder.Prompts.text(session,'Are you sure you want to delete your name?');
+},function(session,results){
+	if (results.response == 'yes'){
+		session.userData.name = ' ';
+		session.send('name deleted');
+
+	}session.replaceDialog('/');}]);
+bot.dialog('/delAge',[function(session){
+	builder.Prompts.text(session,'Are you sure you want to delete your age?');
+},function(session,results){
+	if (results.response == 'yes'){
+		session.userData.age = ' ';
+		session.send('Age deleted');
+		
+	}session.replaceDialog('/');}]);
+bot.dialog('/delEmail',[function(session){
+	builder.Prompts.text(session,'Are you sure you want to delete your email?');
+},function(session,results){
+	if (results.response == 'yes'){
+		session.userData.email = ' ';
+		session.send('email deleted');
+		
+	}session.replaceDialog('/');}]);
+bot.dialog('/deleteInfo',[function(session){
+	builder.Prompts.text(session,'Are you sure you want to delete all of the data and restart the conversation?');
+	},function(session,results){
+		if (results.response=='yes'){
+			session.send('Information deleted');
+			session.userData = [];
+		}
+		session.replaceDialog('/');
+	}]);
