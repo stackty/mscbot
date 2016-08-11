@@ -21,8 +21,9 @@ var server = restify.createServer();
 server.listen(process.env.port||process.env.PORT||3978, function(){
 	console.log('%s listening to %s',server.name,server.url);
 });
-server.post('/api/messages/',connector.listen());//*/
-
+server.post('/api/messages',connector.listen());//*/
+server.use(skype.ensureHttps(true));
+server.use(skype.verifySkypeCert());
 
 bot.dialog('/',dialog);
 dialog.onBegin(function(session, args,next){
@@ -121,7 +122,6 @@ bot.dialog('/delAge',[function(session){
 	if (results.response == 'yes'){
 		session.userData.age = ' ';
 		session.send('Age deleted');
-		
 	}session.replaceDialog('/');}]);
 bot.dialog('/delEmail',[function(session){
 	builder.Prompts.text(session,'Are you sure you want to delete your email?');
@@ -129,7 +129,6 @@ bot.dialog('/delEmail',[function(session){
 	if (results.response == 'yes'){
 		session.userData.email = ' ';
 		session.send('email deleted');
-		
 	}session.replaceDialog('/');}]);
 bot.dialog('/deleteInfo',[function(session){
 	builder.Prompts.text(session,'Are you sure you want to delete all of the data and restart the conversation?');
