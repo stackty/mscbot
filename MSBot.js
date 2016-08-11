@@ -21,9 +21,7 @@ var server = restify.createServer();
 server.listen(process.env.port||process.env.PORT||3978, function(){
 	console.log('%s listening to %s',server.name,server.url);
 });
-server.post('/api/messages',connector.listen());//*/
-server.use(skype.ensureHttps(true));
-server.use(skype.verifySkypeCert());
+server.post('/',connector.listen());//*/
 
 bot.dialog('/',dialog);
 dialog.onBegin(function(session, args,next){
