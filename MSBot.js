@@ -1,3 +1,4 @@
+
 var builder = require('botbuilder');
 var restify = require('restify');
 var http = require('http');
@@ -82,6 +83,8 @@ dialog.onBegin(function(session, args,next){
 //Inital greeting
 bot.dialog('/firstRun',function (session){
 		session.send('Welcome to the bot.');
+		//session.send("http://www.texastechpulse.com/images/logos/cerebriai.png");
+		//the line above is trying to send an image to the connector that is at that address
 		session.replaceDialog('/');
 });
 //prompting user for their name
